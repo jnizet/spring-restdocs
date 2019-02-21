@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 buildscript {
 	repositories {
 		mavenCentral()
@@ -11,6 +13,7 @@ buildscript {
 		classpath 'io.spring.gradle:spring-io-plugin:0.0.8.RELEASE'
 		classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.2'
 		classpath "io.spring.javaformat:spring-javaformat-gradle-plugin:$javaFormatVersion"
+		classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
 	}
 }
 
@@ -87,6 +90,8 @@ subprojects {
 			dependency 'org.mockito:mockito-core:1.10.19'
 			dependency 'org.springframework.hateoas:spring-hateoas:0.23.0.RELEASE'
 			dependency 'org.synchronoss.cloud:nio-multipart-parser:1.1.0'
+			dependency "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
+			dependency "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
 		}
 	}
 
@@ -115,6 +120,7 @@ configure(subprojects - project(":docs")) { subproject ->
 	apply plugin: 'io.spring.javaformat'
 	apply plugin: 'checkstyle'
 	apply from: "${rootProject.projectDir}/gradle/publish-maven.gradle"
+	apply plugin: 'org.jetbrains.kotlin.jvm'
 
 	if (project.hasProperty('platformVersion') && subproject.path != ':spring-restdocs-asciidoctor') {
 		apply plugin: 'spring-io'
@@ -129,6 +135,13 @@ configure(subprojects - project(":docs")) { subproject ->
 					mavenBom "io.spring.platform:platform-bom:${platformVersion}"
 				}
 			}
+		}
+	}
+
+	tasks.withType(KotlinCompile) {
+		kotlinOptions {
+			freeCompilerArgs = ['-Xjsr305=strict']
+			jvmTarget = JavaVersion.VERSION_1_8
 		}
 	}
 
