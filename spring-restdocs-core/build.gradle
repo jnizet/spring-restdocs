@@ -74,3 +74,7 @@ matrixTest {
 		versions = ['5.1.0.BUILD-SNAPSHOT']
 	}
 }
+
+dokka {
+	samples = ['src/test/kotlin/org/springframework/restdocs/kotlin/samples.kt']
+}
